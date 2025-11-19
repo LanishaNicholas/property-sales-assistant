@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { Card, Form, Button, Spinner } from 'react-bootstrap';
 import axios from 'axios';
-import { BsRobot } from 'react-icons/bs'; // Bot icon
+import { BsRobot } from 'react-icons/bs';
+import { FaCommentDots } from 'react-icons/fa'; // Toggle icon
 
 function Chatbot({ propertyDetails }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   const handleSend = async () => {
-    if (!input) return;
+    if (!input.trim()) return;
 
     const userMessage = { sender: 'user', text: input };
-    setMessages([...messages, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
 
@@ -46,54 +48,132 @@ Answer in a friendly and concise way.
     }
   };
 
+  const suggestedReplies = [
+    'Does it have parking?',
+    'How much are they asking?',
+    'When was it built?'
+  ];
+
   return (
-    <Card style={{ width: '400px', margin: 'auto', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}>
-      <Card.Header style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold', textAlign: 'center' }}>
-        Buyer Assistant Chatbot
-      </Card.Header>
-      <Card.Body style={{ padding: '15px' }}>
-        <div style={{ height: '300px', overflowY: 'auto', padding: '10px', backgroundColor: '#fff', borderRadius: '8px' }}>
-          {messages.map((msg, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start', marginBottom: '10px' }}>
-              {msg.sender === 'bot' && <BsRobot style={{ marginRight: '8px', fontSize: '20px', color: '#555' }} />}
+    <>
+      {/* Floating Toggle Button */}
+      <Button
+        variant="success"
+        onClick={() => setShowChat(!showChat)}
+        style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          borderRadius: '50%',
+          width: '60px',
+          height: '60px',
+          zIndex: 1000,
+          boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        <FaCommentDots size={24} color="#fff" />
+      </Button>
+
+      {/* Chatbot Panel */}
+      {showChat && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '90px',
+            right: '20px',
+            width: '350px',
+            zIndex: 999,
+            animation: 'fadeIn 0.3s ease-in-out'
+          }}
+        >
+          <Card style={{ borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.15)' }}>
+            <Card.Header style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold', textAlign: 'center' }}>
+              Buyer Assistant Chatbot
+            </Card.Header>
+            <Card.Body style={{ padding: '15px', backgroundColor: '#fff' }}>
               <div
                 style={{
-                  maxWidth: '70%',
-                  padding: '10px 14px',
-                  borderRadius: '18px',
-                  backgroundColor: msg.sender === 'user' ? '#00897B' : '#f1f1f1',
-                  color: msg.sender === 'user' ? '#fff' : '#333',
-                  fontSize: '14px',
-                  lineHeight: '1.4'
+                  height: '300px',
+                  overflowY: 'auto',
+                  padding: '10px',
+                  backgroundColor: '#fafafa',
+                  borderRadius: '8px',
+                  marginBottom: '10px'
                 }}
               >
-                {msg.text}
+                {messages.map((msg, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: 'flex',
+                      justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                      marginBottom: '10px'
+                    }}
+                  >
+                    {msg.sender === 'bot' && <BsRobot style={{ marginRight: '8px', fontSize: '20px', color: '#555' }} />}
+                    <div
+                      style={{
+                        maxWidth: '70%',
+                        padding: '10px 14px',
+                        borderRadius: '18px',
+                        backgroundColor: msg.sender === 'user' ? '#00897B' : '#f1f1f1',
+                        color: msg.sender === 'user' ? '#fff' : '#333',
+                        fontSize: '14px',
+                        lineHeight: '1.4'
+                      }}
+                    >
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
-        </div>
 
-        {/* Input Section */}
-        <Form className="mt-3 d-flex">
-          <Form.Control
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about the property..."
-            style={{ borderRadius: '20px', padding: '10px' }}
-          />
-          <Button
-            variant="success"
-            onClick={handleSend}
-            className="ms-2"
-            style={{ borderRadius: '50%', width: '45px', height: '45px' }}
-            disabled={loading}
-          >
-            {loading ? <Spinner size="sm" animation="border" /> : '✓'}
-          </Button>
-        </Form>
-      </Card.Body>
-    </Card>
+              {/* Suggested Replies */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
+                {suggestedReplies.map((reply, index) => (
+                  <Button
+                    key={index}
+                    variant="outline-success"
+                    size="sm"
+                    style={{ borderRadius: '20px' }}
+                    onClick={() => setInput(reply)}
+                  >
+                    {reply}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Input Section */}
+              <Form
+                className="d-flex"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSend();
+                }}
+              >
+                <Form.Control
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask about the property..."
+                  style={{ borderRadius: '20px', padding: '10px' }}
+                />
+                <Button
+                  variant="success"
+                  type="submit"
+                  className="ms-2"
+                  style={{ borderRadius: '50%', width: '45px', height: '45px' }}
+                  disabled={loading}
+                >
+                  {loading ? <Spinner size="sm" animation="border" /> : '✓'}
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
+        </div>
+      )}
+    </>
   );
 }
 

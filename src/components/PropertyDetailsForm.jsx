@@ -187,9 +187,15 @@ function PropertyDetailsForm({ onSubmit }) {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
+        
+        <Button
+          variant="primary"
+          type="submit"
+          style={{ marginBottom: '10px', display: 'block', marginLeft: 'auto' }}
+        >
           Submit
         </Button>
+
       </Form>
     </Container>
   );
