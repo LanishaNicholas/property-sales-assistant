@@ -1,15 +1,28 @@
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import PropertyDetailsForm from './components/PropertyDetailsForm';
-
-import './App.css';
+import DocumentManagement from './components/DocumentManagement';
+import Chatbot from './components/Chatbot'; 
+import { Container, Row, Col } from 'react-bootstrap';
 
 function App() {
+  const [propertyDetails, setPropertyDetails] = useState(null);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-3xl mx-auto">
-        
-        <PropertyDetailsForm />
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<PropertyDetailsForm onSubmit={setPropertyDetails} />} />
+      <Route
+        path="/dashboard"
+        element={
+          <Container className="mt-4">
+            <Row>
+              <Col md={6}><DocumentManagement /></Col>
+              <Col md={6}><Chatbot propertyDetails={propertyDetails} /></Col>
+            </Row>
+          </Container>
+        }
+      />
+    </Routes>
   );
 }
 

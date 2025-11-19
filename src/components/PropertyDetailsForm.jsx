@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
-function PropertyDetailsForm() {
+function PropertyDetailsForm({ onSubmit }) {
   const [formData, setFormData] = useState({
     address: '',
     city: '',
@@ -16,8 +17,8 @@ function PropertyDetailsForm() {
     features: ''
   });
 
-  const [submittedData, setSubmittedData] = useState(null);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,13 +35,13 @@ function PropertyDetailsForm() {
     }
 
     setError('');
-    setSubmittedData(formData);
-    console.log('Property Details:', formData);
+    onSubmit(formData); // Pass data to App.js
+    navigate('/dashboard'); // Redirect to dashboard
   };
 
   return (
     <Container className="mt-4">
-      <h1 className="text-2xl font-bold mb-4">Property Sales Assistant</h1>
+      <h1 className="mb-4">Property Sales Assistant</h1>
       {error && <Alert variant="danger">{error}</Alert>}
       <Form onSubmit={handleSubmit}>
         <Row>
@@ -190,13 +191,6 @@ function PropertyDetailsForm() {
           Submit
         </Button>
       </Form>
-
-      {submittedData && (
-        <Alert variant="success" className="mt-4">
-          <h5>Property Submitted:</h5>
-          <pre>{JSON.stringify(submittedData, null, 2)}</pre>
-        </Alert>
-      )}
     </Container>
   );
 }
