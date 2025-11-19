@@ -87,7 +87,7 @@ Answer in a friendly and concise way.
             animation: 'fadeIn 0.3s ease-in-out'
           }}
         >
-          <Card style={{ borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.15)' }}>
+          <Card style={{ borderRadius: '10px', boxShadow: 'rgb(0 0 0 / 38%) 0px 4px 10px' }}>
             <Card.Header style={{ backgroundColor: '#f8f9fa', fontWeight: 'bold', textAlign: 'center' }}>
               Buyer Assistant Chatbot
             </Card.Header>
@@ -98,7 +98,7 @@ Answer in a friendly and concise way.
                   overflowY: 'auto',
                   padding: '10px',
                   backgroundColor: '#fafafa',
-                  borderRadius: '8px',
+                  borderRadius: '10px',
                   marginBottom: '10px'
                 }}
               >

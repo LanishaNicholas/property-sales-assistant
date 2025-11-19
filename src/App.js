@@ -16,8 +16,8 @@ function App() {
         element={
           <Container className="mt-4">
             <Row>
-              <Col md={6}><DocumentManagement /></Col>
-              <Col md={6}><Chatbot propertyDetails={propertyDetails} /></Col>
+              <Col md={9}><DocumentManagement /></Col>
+              <Col md={3}><Chatbot propertyDetails={propertyDetails} /></Col>
             </Row>
           </Container>
         }
