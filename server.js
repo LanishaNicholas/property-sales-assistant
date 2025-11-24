@@ -7,22 +7,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Property details (could come from DB or form submission)
-const propertyDetails = {
+//  Property details (could come from DB or form submission)
+/*const propertyDetails = {
   size: "2500 sq ft",
   neighborhood: "Quiet suburban area",
   parking: "Yes, 2-car garage",
   price: "$450,000",
   builtYear: "2018"
-};
+};*/
 
-// ✅ Guardrails: Forbidden words
+//  Guardrails: Forbidden words
 const forbiddenWords = ["hack", "illegal", "exploit"];
 
 app.post('/chat', async (req, res) => {
-  const { prompt } = req.body;
+  //const { prompt } = req.body;
+  const { prompt, propertyDetails } = req.body; 
 
-  // ✅ Validate input
+  // Validate input
   if (!prompt || prompt.length > 500) {
     return res.status(400).json({ error: "Invalid prompt" });
   }
@@ -31,7 +32,7 @@ app.post('/chat', async (req, res) => {
     return res.status(400).json({ error: "Forbidden query" });
   }
 
-  // ✅ Build full prompt with context and instructions
+  //  Build full prompt with context and instructions
   const fullPrompt = `
 You are a helpful real estate assistant. Use the property details provided below to answer questions.
 If information is missing, respond with: "Sorry, that detail is not available."
@@ -44,7 +45,7 @@ User question: ${prompt}
   try {
     
     const response = await axios.post(
-  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDrbxz490JO7CpMzQU7KNIH_muI6e4qw3k`,
+  `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
   {
     contents: [{ parts: [{ text: fullPrompt }] }]
   },
@@ -54,7 +55,7 @@ User question: ${prompt}
 );
 
 
-    // ✅ Extract and return the model's response
+    //  Extract and return the model's response
     const answer = response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response from Gemini.";
     res.json({ answer });
 
@@ -64,4 +65,4 @@ User question: ${prompt}
   }
 });
 
-app.listen(5000, () => console.log('✅ Backend running on http://localhost:5000'));
+app.listen(5000, () => console.log('Backend running on http://localhost:5000'));
